@@ -1,0 +1,168 @@
+---@diagnostic disable: deprecated
+local plrs = game:GetService("Players")
+local plr = plrs.LocalPlayer
+local TweenService = game:GetService("TweenService")
+local Communicate = plr.Character.Communicate
+local rs = game:GetService("RunService")
+local Assets = Instance.new("Folder", plr.PlayerGui)
+Assets.Name = "TempAssets"
+
+-- { Functions } --
+
+local MainFuncs  = {}
+
+MainFuncs.GetNewCharacter = function()
+    if not plr.Character then plr.CharacterAdded:Wait() end
+    plr.Character:WaitForChild("HumanoidRootPart")
+    return plr.Character
+end
+
+MainFuncs.Communicate = function(info)
+    local chr = MainFuncs.GetNewCharacter()
+    chr.Communicate:FireServer(info)
+end
+
+MainFuncs.PlayAnimation = function(id)
+    local chr = MainFuncs.GetNewCharacter()
+    local Anim = Instance.new("Animation")
+    Anim.AnimationId = "rbxassetid://"..id
+    Anim.Parent = chr.Humanoid
+    local loaded = chr.Humanoid:LoadAnimation(Anim)
+    loaded:Play(.2)
+    return loaded
+end
+
+
+MainFuncs.ReplaceAnimations = function(args)
+    local chr = MainFuncs.GetNewCharacter()
+    chr:WaitForChild("Humanoid").AnimationPlayed:Connect(function(track)
+        local playingtrack = args[track.Animation.AnimationId]
+        if playingtrack.Animation then
+            track:AdjustSpeed(0.0)
+            track:Stop()
+            if playingtrack.Overwrite then
+                for _, s in pairs(chr:WaitForChild("Humanoid"):GetPlayingAnimationTracks()) do
+                    if args[s.Animation.AnimationId].Animation then
+                        s:Stop()
+                    end
+                end
+            end
+
+            local loaded = MainFuncs.PlayAnimation(playingtrack.Animation)
+            if playingtrack.Speed then
+                loaded:AdjustSpeed(playingtrack.Speed)
+            end
+            if playingtrack.Priority then
+                loaded.Priority = playingtrack.Priority
+            end
+            if playingtrack.TimePosition then
+                loaded.TimePosition = playingtrack.TimePosition
+            end
+        end
+    end)
+end
+
+function MainFuncs:ChangeTool(name, newname)
+    for i,v in pairs(plr.PlayerGui.Hotbar.Backpack.Hotbar:GetDescendants()) do
+        if v:IsA("TextLabel") and v.Text == name then
+            v.Text = newname
+            return v
+        end
+    end
+end
+
+
+MainFuncs.OnSpawn = function(Character, Spawn)
+    if Character == "KJ" then
+        local DestroyInfo = {
+            "WaterPalm",
+            "VelForwardBv"
+        }
+        local ReplaceInfo = {
+            -- Moves --
+            ["rbxassetid://12272894215"] = {["Animation"] = "16945573694", ["Speed"] = 1.5},
+            ["rbxassetid://12273188754"] = {["Animation"] = "16945550029", ["Priority"] = Enum.AnimationPriority.Action4, ["Speed"] = 1.5, ["TimePosition"] = 2.5},
+            ["rbxassetid://12307656616"] = {["Animation"] = "17325254223", ["Speed"] = 1.5},
+            ["rbxassetid://12309835105"] = {["Animation"] = "0"},
+            -- LMB --
+            ["rbxassetid://13532562418"] = {["Animation"] = "17325510002", ["Overwrite"] = true},
+            ["rbxassetid://13532600125"] = {["Animation"] = "17325513870", ["Overwrite"] = true},
+            ["rbxassetid://13532604085"] = {["Animation"] = "17325522388", ["Overwrite"] = true},
+            ["rbxassetid://13294471966"] = {["Animation"] = "17325537719", ["Overwrite"] = true},
+        }
+
+        plr.CharacterAdded:Connect(function(chr)
+            plr.Character:WaitForChild("HumanoidRootPart")
+            plr.Character:WaitForChild("Humanoid")
+            plr.Character.ChildAdded:Wait()
+            if chr:GetAttribute("Character") == Spawn then
+                chr:SetAttribute("UltimateName", string.upper("20 Series"))
+                MainFuncs:ChangeTool("Flowing Water", "Ravage")
+                MainFuncs:ChangeTool("Hunter's Grasp", "Collateral Ruin")
+                MainFuncs:ChangeTool("Prey's Peril", "Swift Sweep")
+                MainFuncs:ChangeTool("Lethal Whirlwind Stream", "Fodder")
+
+                for _,v in pairs(chr:GetDescendants()) do
+                    if v.Name == "WaterPalm" then
+                        task.wait()
+                        v:Destroy()
+                    end
+                end
+                chr.DescendantAdded:Connect(function(obj)
+                    if table.find(DestroyInfo, obj.Name) then
+                        rs.Heartbeat:Wait()
+                        obj:Destroy()
+                    end
+                end)
+
+                for _,track in pairs(chr.Humanoid:GetPlayingAnimationTracks()) do
+                    if track.Animation.AnimationId == "rbxassetid://15957376722" then
+                        track:Stop()
+                    end
+                end
+
+                MainFuncs.PlayAnimation("17325160621")
+
+                MainFuncs.ReplaceAnimations(ReplaceInfo)
+            end
+        end)
+    end
+end
+
+-- 15957376722
+
+
+function MainFuncs:AddButton(FrameName: string?, CustomCharacter: any?, ExtraArgs: table?)
+    for i,v in pairs(plr.PlayerGui.TopbarPlus.TopbarContainer:GetDescendants()) do
+        if v.Name == FrameName and v:IsA("Frame") then
+            local c=v:Clone();c.Parent=v.Parent;c.Name="FakeLabel"..FrameName;c.Visible=true;
+            local Button = c.IconButton
+            if CustomCharacter then
+                MainFuncs.OnSpawn(FrameName, ExtraArgs["Character"])
+            end
+            Button.MouseEnter:Connect(function() TweenService:Create(c, TweenInfo.new(.5), {BackgroundColor3=Color3.fromRGB(163, 162, 165), BackgroundTransparency=.7}):Play(); if CustomCharacter then TweenService:Create(c.IconButton.IconLabel, TweenInfo.new(.5), {TextColor3=Color3.fromRGB(0, 238, 255)}):Play() else TweenService:Create(c.IconButton.IconLabel, TweenInfo.new(.5), {TextColor3=Color3.fromRGB(255, 216, 19)}):Play()  end end)
+            Button.MouseLeave:Connect(function() TweenService:Create(c, TweenInfo.new(.5), {BackgroundColor3=Color3.fromRGB(255, 255, 255), BackgroundTransparency=1}):Play(); if CustomCharacter then TweenService:Create(c.IconButton.IconLabel, TweenInfo.new(.5), {TextColor3=Color3.fromRGB(255, 216, 19)}):Play() else TweenService:Create(c.IconButton.IconLabel, TweenInfo.new(.5), {TextColor3=Color3.fromRGB(255, 255, 255)}):Play() end end)
+            Button.MouseButton1Click:Connect(function() if CustomCharacter then task.spawn(function() MainFuncs.Communicate({["Goal"] = "Change Character", ["Character"] = ExtraArgs["Character"]}) end) else task.spawn(function() MainFuncs.Communicate({["Goal"] = "Change Character", ["Character"] = FrameName}) end) end end)
+            v:Destroy()
+            return c
+        else
+            warn("Frame "..FrameName.." not found.\nPlease check again.")
+        end
+    end
+end
+
+for i,v in pairs(plr.PlayerGui.TopbarPlus.TopbarContainer:GetDescendants()) do
+    if v:IsA("Frame") and v.Name == "Bald" then
+        for _, Frame in pairs(v.Parent:GetChildren()) do
+            if Frame:IsA("Frame") then
+                if Frame.Name == "KJ" then
+                    --loc = Frame
+                    MainFuncs:AddButton(Frame.Name, true, {["Character"]="Hunter"})
+                else
+                    MainFuncs:AddButton(Frame.Name, false)
+                end
+            end
+        end
+        break
+    end
+end
