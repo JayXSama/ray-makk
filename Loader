@@ -1,4 +1,14 @@
-elseif GameId == 10449761463 then
+if game.PlaceId == 10449761463 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/JayXSama/ray-makk/main/The%20Strongest%20Battlegrounds"))()
-elseif PlaceId == 9391468976 then
+if game.PlaceId == IDHERE then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FD2Team/Nameless-Admin-No-Byfron-Kick/main/Source",true))()
+if game.PlaceId == 13447209899 then
+local fakeban = "this game isnt supported bud :/" game.Players.LocalPlayer:Kick(fakeban) 
+if game.PlaceId == 4483381587 then
+local fakeban = "this game isnt supported bud :/" game.Players.LocalPlayer:Kick(fakeban) 
+if game.PlaceId == 11815767793 then
+local fakeban = "this game isnt supported bud :/" game.Players.LocalPlayer:Kick(fakeban) 
+if game.PlaceId == 16112501126 then
+local fakeban = "this game isnt supported bud :/" game.Players.LocalPlayer:Kick(fakeban) 
+if game.PlaceId == 12360882630 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/JayXSama/ray-makk/main/The%20Strongest%20Battlegrounds"))()
