@@ -1,0 +1,4 @@
+elseif GameId == 10449761463 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/JayXSama/ray-makk/main/The%20Strongest%20Battlegrounds"))()
+elseif PlaceId == 9391468976 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FD2Team/Nameless-Admin-No-Byfron-Kick/main/Source",true))()
