@@ -1,7 +1,7 @@
 if game.PlaceId == 10449761463 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/JayXSama/ray-makk/main/The%20Strongest%20Battlegrounds"))()
 end
-if game.PlaceId == IDHERE then
+if game.PlaceId == 9391468976 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/JayXSama/ray-makk/main/Jujutsu%20Shenanigans"))()
 end
 if game.PlaceId == 13447209899 then
